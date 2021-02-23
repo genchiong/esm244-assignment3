@@ -1,0 +1,105 @@
+---
+title: "Cetacean Species Richness in the California Bight"
+author: "Genevieve Chiong"
+date: "2/21/2021"
+output:
+   html_document:
+     theme: cosmo
+     code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+library(raster) 
+library(tidyverse)
+library(here)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(rnaturalearthhires)
+```
+
+```{r echo = T, fig.show = "hide"}
+
+# Read in the California coastline cetacean raster data: 
+my_files <- list.files(path = here("data", "ca_cetaceans"), 
+                       full.names = TRUE)
+
+cetacean_stack <- raster::stack(my_files)
+
+# Plot data for exploration 
+plot(cetacean_stack)
+```
+
+```{r}
+# Create a raster of species richness (number of species that occur in a particular location) of cetacean species, using a probability threshold of 0.6
+
+# Create a function to determine cetacean presence
+is_cetacean <- function(x) {
+  y <- ifelse(x >= 0.6, 1, 0) # Presence layer of 1 (present) or 0 (not present)
+  return(y) 
+}
+
+# Apply function to rasters to determine presence
+cetacean_presence <- calc(cetacean_stack, fun = is_cetacean) 
+
+# Sum the rasters 
+cetacean_richness <- calc(cetacean_presence, fun = sum, na.rm = TRUE) 
+
+# Convert to a data frame
+cetacean_richness_df <- raster::rasterToPoints(cetacean_richness) %>% 
+  as.data.frame() 
+```
+
+```{r echo = T, results = "hide"}
+
+# Download shapefile for California's coastline
+states <- ne_download(scale = 50, 
+                      type = "states",
+                      category = "cultural",
+                      returnclass = "sf")
+
+states %>% 
+  filter(name == "California")
+```
+
+```{r, fig.cap = "**Figure 1.** Species richness of cetacean species in the California Bight. Based on the probability of occurence of 35 cetacean species (based on environmental suitability, including species preference for water temperature, depth, salinity, and distance to land) off the coast of California. A probability threshold of 0.6 was used to determine presence for each species. Data: Aquamaps. 2016."} 
+
+# Create a static map using the species richness raster 
+ggplot() +
+  geom_raster(data = cetacean_richness_df,
+              aes(x = x,
+                  y = y,
+                  fill = layer)) +
+  geom_sf(data = states) +
+  coord_sf(xlim = c(-125, -115), 
+           ylim = c(32, 38), 
+           expand = FALSE) +
+  labs(x = "\nLongitude",
+       y = "Latitude\n",
+       fill = "Number of \nCetacean Species")
+```
+
+
+#### **Citations** 
+
+AquaMaps (Kaschner, K., Rius-Barile, J., Kesner-Reyes, K., Garilao, C., Kullander, S., Rees, T., & Froese, R.). 2016. AquaMaps: Predicted range maps for aquatic species. www.aquamaps.org
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
