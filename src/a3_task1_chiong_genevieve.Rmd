@@ -19,12 +19,12 @@ library(tmap)
 ```
 
 ```{r}
-# Read in the CA county data (TIGER shapefile):
+# Read in the CA county data (TIGER shapefile)
 ca_counties <- read_sf(here("data", "ca_counties"), layer = "CA_Counties_TIGER2016") %>% 
   clean_names() %>% 
   dplyr::select(name)
 
-# Read in the oil spill data (ds394 shapefile): 
+# Read in the oil spill data (ds394 shapefile) 
 oil_spill <- read_sf(here("data", "ds394"), layer = "ds394") %>% 
   clean_names() 
 ```
@@ -41,7 +41,7 @@ st_crs(ca_counties) # NAD83
 ```
 
 ```{r echo = T, fig.show = "hide"}
-# Create a graph to explore the data 
+# Exploratory ggplot
 ggplot() + 
   geom_sf(data = ca_counties) +
   geom_sf(data = oil_spill)
@@ -51,6 +51,7 @@ ggplot() +
 # Exploratory interactive map showing the location of oil spill events 
 tmap_mode("view")
 
+tm_basemap("Stamen.Watercolor") +
 tm_shape(ca_counties) +
   tm_polygons() +
 tm_shape(oil_spill) +
@@ -58,7 +59,7 @@ tm_shape(oil_spill) +
 ```
 
 
-```{r, fig.cap = "**Figure 1.** California map of the number of inland oil spill events by country in 2008. Modoc County is not included as it had zero spill events. Data: California Department of Fish and Wildlife. 2009."}
+```{r, fig.cap = "**Figure 1.** California map of the number of inland oil spill events by county in 2008. Modoc County is not shown as it had zero spill events. Data: California Department of Fish and Wildlife. 2009."}
 
 # Static chloropleth map in which the fill color for each county depends on the count of inland oil spill events by county for the 2008 oil spill data 
 
@@ -67,13 +68,15 @@ ca_oil_spills <- ca_counties %>%
   filter(inlandmari == "Inland")
 
 oil_spill_counts <- ca_oil_spills %>% 
-  count(name)
+  count(name) 
 
 ggplot(data = oil_spill_counts) +
-  geom_sf(aes(fill = n), color = "white", size = 0.1) +
+  geom_sf(aes(fill = n), 
+          color = "white", 
+          size = 0.1) +
     scale_fill_gradientn(colors = c("cadetblue4","orange","violetred")) +
   theme_minimal() +
-  labs(fill = "Number of oil spill events",
+  labs(fill = "Number of oil \nspill events",
        x = "\nLongitude",
        y = "Latitude\n")
 ```

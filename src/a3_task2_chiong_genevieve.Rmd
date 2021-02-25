@@ -64,7 +64,7 @@ states %>%
   filter(name == "California")
 ```
 
-```{r, fig.cap = "**Figure 1.** Species richness of cetacean species in the California Bight. Based on the probability of occurence of 35 cetacean species (based on environmental suitability, including species preference for water temperature, depth, salinity, and distance to land) off the coast of California. A probability threshold of 0.6 was used to determine presence for each species. Data: Aquamaps. 2016."} 
+```{r, fig.cap = "**Figure 1.** Species richness of cetacean species in the California Bight. Based on the occurrence probability of 35 cetacean species (based on environmental suitability, including species preference for water temperature, depth, salinity, and distance to land) off the California coast. A probability threshold of 0.6 was used to determine presence for each species. Data: Aquamaps. 2016."} 
 
 # Create a static map using the species richness raster 
 ggplot() +
@@ -85,13 +85,6 @@ ggplot() +
 #### **Citations** 
 
 AquaMaps (Kaschner, K., Rius-Barile, J., Kesner-Reyes, K., Garilao, C., Kullander, S., Rees, T., & Froese, R.). 2016. AquaMaps: Predicted range maps for aquatic species. www.aquamaps.org
-
-
-
-
-
-
-
 
 
 

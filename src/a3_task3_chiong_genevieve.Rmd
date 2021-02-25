@@ -38,27 +38,29 @@ red_headed_league_tidy <- data.frame(red_headed_league_text) %>%
 ```
 
 ```{r}
-# Create a subset of the top 100 words in the whole text 
-top_100 <- red_headed_league_tidy %>% 
+# Create a subset of the top 150 words in the whole text 
+top_150 <- red_headed_league_tidy %>% 
   count(word) %>% 
   arrange(-n) %>% 
-  slice(1:100)
+  slice(1:150)
 
 # Word cloud of counts for the most frequently used words in the entire text
-top_100_cloud <- ggplot(data = top_100,
+top_150_cloud <- ggplot(data = top_150,
                         aes(label = word)) +
-  geom_text_wordcloud(aes(color = n, size = n), shape = "star") +
-  scale_size_area(max_size = 7) +
-  scale_color_gradientn(colors = c("purple", "black", "steelblue4")) +
+  geom_text_wordcloud(aes(color = n, 
+                          size = n), 
+                      shape = "star") +
+  scale_size_area(max_size = 8) +
+    scale_color_gradientn(colors = c("goldenrod3", "violetred", "steelblue4")) +
   theme_minimal()
 
-top_100_cloud
+top_150_cloud
 ```
 
-**Figure 1.** The 100 most frequently used words in Sir Author Conan Doyle's "The Red Headed League". Data: Doyle, A.C. 1892.
+**Figure 1.** The 150 most frequently used words in Sir Author Conan Doyle's "The Red Headed League". Data: Doyle, A.C. 1892.
 
 ```{r}
-# Perform sentiment analysis using the "nrc" lexicon on entire text
+# Perform sentiment analysis using the "nrc" lexicon on the entire text
 red_headed_league_nrc <- red_headed_league_tidy %>% 
   inner_join(get_sentiments("nrc"))
 
